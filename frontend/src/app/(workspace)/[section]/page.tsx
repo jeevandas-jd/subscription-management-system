@@ -5,9 +5,25 @@ import { workspacePages } from "@/data/navigation";
 
 export const instant = false;
 
+// These slugs have their own dedicated page files; exclude from the catch-all.
+const dedicatedSlugs = new Set([
+  "dashboard",
+  "customers",
+  "products",
+  "plans",
+  "quotations",
+  "subscriptions",
+  "invoices",
+  "payments",
+  "discounts",
+  "billing",
+  "analytics",
+  "portal",
+]);
+
 export function generateStaticParams() {
   return workspacePages
-    .filter((page) => page.slug !== "dashboard")
+    .filter((page) => !dedicatedSlugs.has(page.slug))
     .map((page) => ({ section: page.slug }));
 }
 
@@ -30,7 +46,7 @@ export default async function WorkspaceSectionPage({
   const { section } = await params;
   const page = workspacePages.find((item) => item.slug === section);
 
-  if (!page || page.slug === "dashboard") {
+  if (!page || dedicatedSlugs.has(page.slug)) {
     notFound();
   }
 

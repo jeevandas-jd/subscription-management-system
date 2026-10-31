@@ -106,6 +106,46 @@ export default function LoginForm() {
           {form.formState.isSubmitting ? "Signing in…" : "Sign in"}
         </AuthSubmitButton>
       </form>
+      <div className="mt-6 border-t border-slate-100 pt-5">
+        <p className="text-center text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          Demo quick sign-in
+        </p>
+        <div className="mt-2.5 grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              form.setValue("email", "admin@example.com");
+              form.setValue("password", "Admin@123");
+              void form.handleSubmit(submit)();
+            }}
+            className="rounded-lg border border-slate-200 bg-white py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+          >
+            Admin
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              form.setValue("email", "staff@example.com");
+              form.setValue("password", "Staff@123");
+              void form.handleSubmit(submit)();
+            }}
+            className="rounded-lg border border-slate-200 bg-white py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+          >
+            Staff
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              form.setValue("email", "ananya.sharma@example.com");
+              form.setValue("password", "Customer@123");
+              void form.handleSubmit(submit)();
+            }}
+            className="rounded-lg border border-slate-200 bg-white py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+          >
+            Customer
+          </button>
+        </div>
+      </div>
       <p className="mt-6 text-center text-sm text-slate-500">
         New to Subflow?{" "}
         <Link href="/register" className="font-semibold text-[#635bff] hover:text-[#5148e5]">

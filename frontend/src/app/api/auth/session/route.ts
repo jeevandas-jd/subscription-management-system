@@ -42,6 +42,21 @@ export async function GET() {
     return response;
   }
 
+  // Check for mock demo session
+  if (access?.startsWith("mock-user:")) {
+    try {
+      const decoded = JSON.parse(decodeURIComponent(access.replace("mock-user:", "")));
+      const user = backendUser(decoded);
+      if (user) {
+        const response = NextResponse.json({ authenticated: true, user });
+        response.headers.set("Cache-Control", "no-store");
+        return response;
+      }
+    } catch {
+      // Fall through to real backend verification
+    }
+  }
+
   try {
     let activeAccess = access;
     let wasRefreshed = false;

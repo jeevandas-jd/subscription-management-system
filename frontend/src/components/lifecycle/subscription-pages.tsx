@@ -15,6 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { getInvoices } from "@/lib/finance/invoice-service";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import type { ReactNode } from "react";
 import { z } from "zod";
@@ -371,6 +372,13 @@ export function SubscriptionDetails({ id }: { id: number }) {
   const { user } = useAuth();
   const [pending, setPending] = useState<PendingAction | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const relatedInvoices = useMemo(() => {
+    try {
+      return getInvoices().filter((inv) => inv.subscription_id === id);
+    } catch {
+      return [];
+    }
+  }, [id]);
   if (!isReady) return <PageContainer><LifecycleDemoNotice /><LifecycleLoading label="subscription" /></PageContainer>;
   if (storageError) return <PageContainer><LifecycleDemoNotice /><LifecycleStorageError message={storageError} onRetry={refresh} /></PageContainer>;
   const subscription = subscriptions.find((item) => item.id === id);
@@ -422,6 +430,77 @@ export function SubscriptionDetails({ id }: { id: number }) {
             const variant = variants.find((item) => item.id === line.variant_id);
             return <tr key={line.id} className="text-sm"><td className="py-4 pl-5 pr-4 font-medium text-slate-800">{product?.name ?? "Unavailable product"}{variant ? <p className="mt-1 text-xs text-slate-400">{variant.name}</p> : null}</td><td className="py-4 pr-4 text-slate-600">{line.quantity}</td><td className="py-4 pr-4 text-slate-600">{formatInr(line.unit_price)}</td><td className="py-4 pr-5 text-right font-semibold text-slate-900">{formatInr(line.line_total)}</td></tr>;
           })}</tbody></table></div>
+        </LifecycleSection>
+        <LifecycleSection title="Related invoices" description="Invoices generated for this subscription.">
+          {relatedInvoices.length ? (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[580px] text-left">
+                <caption className="sr-only">Related invoices</caption>
+                <thead>
+                  <tr className="border-b border-slate-100 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    <th className="py-3 pl-5 pr-4">Invoice</th>
+                    <th className="py-3 pr-4">Issue date</th>
+                    <th className="py-3 pr-4">Due date</th>
+                    <th className="py-3 pr-4">Status</th>
+                    <th className="py-3 pr-5 text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {relatedInvoices.map((inv) => (
+                    <tr key={inv.id} className="text-sm">
+                      <td className="py-4 pl-5 pr-4 font-semibold text-slate-900">
+                        <Link href={`/invoices/${inv.id}`} className="hover:text-[#635bff] underline">
+                          {inv.invoice_number}
+                        </Link>
+                      </td>
+                      <td className="py-4 pr-4 text-slate-600">{formatLifecycleDate(inv.issue_date)}</td>
+                      <td className="py-4 pr-4 text-slate-600">{formatLifecycleDate(inv.due_date)}</td>
+                      <td className="py-4 pr-4"><StatusBadge status={inv.status} /></td>
+                      <td className="py-4 pr-5 text-right font-semibold text-slate-900">{formatInr(inv.grand_total)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="p-5 text-xs text-slate-500">No invoices have been generated for this subscription yet.</div>
+          )}
+        </LifecycleSection>
+        <LifecycleSection title="Activity & status history" description="Chronological record of status changes and events.">
+          <div className="p-5 space-y-3">
+            <div className="flex items-start gap-3 text-xs">
+              <span className="size-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+              <div>
+                <p className="font-semibold text-slate-800">Subscription initialized (draft)</p>
+                <p className="text-slate-400 mt-0.5">{formatLifecycleDate(subscription.created_at, true)}</p>
+              </div>
+            </div>
+            {quotation ? (
+              <div className="flex items-start gap-3 text-xs">
+                <span className="size-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-slate-800">Converted from quotation {quotation.quotation_number}</p>
+                  <p className="text-slate-400 mt-0.5">{formatLifecycleDate(subscription.created_at, true)}</p>
+                </div>
+              </div>
+            ) : null}
+            <div className="flex items-start gap-3 text-xs">
+              <span className="size-2 rounded-full bg-indigo-500 mt-1.5 shrink-0" />
+              <div>
+                <p className="font-semibold text-slate-800">Current status: <span className="capitalize">{subscription.status}</span></p>
+                <p className="text-slate-400 mt-0.5">Last updated {formatLifecycleDate(subscription.updated_at, true)}</p>
+              </div>
+            </div>
+            {subscription.closed_at ? (
+              <div className="flex items-start gap-3 text-xs">
+                <span className="size-2 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-slate-800">Subscription closed</p>
+                  <p className="text-slate-400 mt-0.5">{formatLifecycleDate(subscription.closed_at, true)}</p>
+                </div>
+              </div>
+            ) : null}
+          </div>
         </LifecycleSection>
       </div>
       <aside className="h-fit space-y-5">
