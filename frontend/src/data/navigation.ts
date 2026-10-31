@@ -1,5 +1,6 @@
 import {
   BadgePercent,
+  CalendarClock,
   ChartNoAxesCombined,
   CreditCard,
   FileText,
@@ -75,6 +76,12 @@ export const workspacePages: WorkspacePage[] = [
     icon: BadgePercent,
   },
   {
+    slug: "billing",
+    label: "Billing overview",
+    description: "Simulated billing cycles, upcoming invoices, and overdue balance indicators.",
+    icon: CalendarClock,
+  },
+  {
     slug: "analytics",
     label: "Analytics",
     description: "Explore revenue, subscription, and collections reporting.",
@@ -99,7 +106,7 @@ export const navigationGroups = [
   },
   {
     label: "Billing",
-    slugs: ["invoices", "payments", "discounts"],
+    slugs: ["invoices", "payments", "discounts", "billing"],
   },
   {
     label: "Insights",

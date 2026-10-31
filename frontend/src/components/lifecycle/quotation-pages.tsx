@@ -408,6 +408,33 @@ export function QuotationDetails({ id }: { id: number }) {
             return <tr key={line.id} className="text-sm"><td className="py-4 pl-5 pr-4 font-medium text-slate-800">{product?.name ?? "Unavailable product"}{variant ? <p className="mt-1 text-xs text-slate-400">{variant.name}</p> : null}</td><td className="py-4 pr-4 text-slate-600">{plan?.name ?? "Unavailable plan"}</td><td className="py-4 pr-4 text-slate-600">{line.quantity}</td><td className="py-4 pr-4 text-slate-600">{formatInr(line.unit_price)}</td><td className="py-4 pr-5 text-right font-semibold text-slate-900">{formatInr(line.line_total)}</td></tr>;
           })}</tbody></table></div>
         </LifecycleSection>
+        <LifecycleSection title="Activity & status history" description="Chronological record of status changes and events.">
+          <div className="p-5 space-y-3">
+            <div className="flex items-start gap-3 text-xs">
+              <span className="size-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+              <div>
+                <p className="font-semibold text-slate-800">Quotation created (draft)</p>
+                <p className="text-slate-400 mt-0.5">{formatLifecycleDate(quotation.created_at, true)}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 text-xs">
+              <span className="size-2 rounded-full bg-indigo-500 mt-1.5 shrink-0" />
+              <div>
+                <p className="font-semibold text-slate-800">Current status: <span className="capitalize">{quotation.status}</span></p>
+                <p className="text-slate-400 mt-0.5">Last updated {formatLifecycleDate(quotation.updated_at, true)} · Valid until {formatLifecycleDate(quotation.valid_until)}</p>
+              </div>
+            </div>
+            {linkedSubscription ? (
+              <div className="flex items-start gap-3 text-xs">
+                <span className="size-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-slate-800">Converted into subscription {linkedSubscription.subscription_number}</p>
+                  <p className="text-slate-400 mt-0.5">{formatLifecycleDate(quotation.updated_at, true)}</p>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </LifecycleSection>
       </div>
       <aside className="h-fit rounded-xl border border-slate-200 bg-white p-5"><h2 className="text-sm font-semibold text-slate-900">Demo totals</h2><p className="mt-1 text-xs leading-5 text-slate-500">Calculated locally for the demo only.</p><Totals label="Subtotal" value={quotation.subtotal} /><Totals label="Discount" value={quotation.discount_total} /><Totals label="Tax" value={quotation.tax_total} /><Totals label="Demo total" value={quotation.grand_total} total /><p className="mt-4 border-t border-slate-100 pt-3 text-[11px] leading-5 text-slate-400">No tax or discount inputs are defined in the quotation create contract. Actual totals must be calculated and verified by the backend.</p></aside>
     </div>
