@@ -13,7 +13,7 @@ Open [http://localhost:3000](http://localhost:3000). The root route redirects to
 
 ## Routes
 
-The dashboard is available at `/dashboard`. Customer management is available at `/customers`, `/customers/new`, `/customers/[id]`, and `/customers/[id]/edit`. Product catalogue routes are `/products`, `/products/new`, `/products/[id]`, and `/products/[id]/edit`; product details include variant listing and creation. Plan routes are `/plans`, `/plans/new`, `/plans/[id]`, and `/plans/[id]/edit`. Shared-shell placeholder pages remain for `/quotations`, `/subscriptions`, `/invoices`, `/payments`, `/discounts`, `/analytics`, and `/settings`.
+The dashboard is available at `/dashboard`. Customer management is available at `/customers`, `/customers/new`, `/customers/[id]`, and `/customers/[id]/edit`. Product catalogue routes are `/products`, `/products/new`, `/products/[id]`, and `/products/[id]/edit`; product details include variant listing and creation. Plan routes are `/plans`, `/plans/new`, `/plans/[id]`, and `/plans/[id]/edit`. Quotation routes are `/quotations`, `/quotations/new`, `/quotations/[id]`, and `/quotations/[id]/edit`. Subscription routes are `/subscriptions`, `/subscriptions/new`, `/subscriptions/[id]`, and `/subscriptions/[id]/edit`. `/invoices`, `/payments`, `/discounts`, `/analytics`, and `/settings` remain placeholders.
 
 Dashboard figures and activity are sample data stored in `src/data/mock-dashboard.ts`; they are not connected to the backend and do not represent live financial calculations. The backend remains authoritative for billing and financial values.
 
@@ -24,6 +24,16 @@ Products, variants, and subscription plans currently use the same demo-only appr
 The documented product, variant, and plan endpoints are `GET/POST /api/v1/products/`, `GET/PATCH/DELETE /api/v1/products/{id}/`, `GET/POST /api/v1/products/{id}/variants/`, `GET/POST /api/v1/plans/`, and `GET/PATCH/DELETE /api/v1/plans/{id}/`. These are not integrated yet: the Django product and plan models/views are stubs and `backend/config/urls.py` does not expose API routes. The frontend therefore does not invent a browser API client or pretend to enforce backend deletion constraints. Once connected, the backend must remain authoritative for delete restrictions and all role permissions.
 
 Catalogue permissions follow the API contract in the UI: Admin can view and manage products, variants, and plans; Staff can view them but cannot create, edit, or delete; Customers cannot access either module. These checks are only frontend UX controls. The backend must enforce the same permissions.
+
+## Quotations and subscriptions
+
+The Sprint 5 quotation and subscription screens use browser-only sample data; they do not call the Django API. Records are stored under `subflow.quotations.v1` and `subflow.subscriptions.v1` in `localStorage`. Removing either key restores that resource's sample records. Customer links use the existing mock customer string IDs and are resolved to the signed-in customer by email; these local identifiers do not represent the integer IDs in the API contract.
+
+Quotation flows cover listing, filtering, sorting, draft creation/editing, detail viewing, and conversion of an accepted, unexpired quotation. The documented create payload has no unit-price, tax, or discount inputs, so its line prices and totals are explicitly demo estimates. The UI does not add unsupported send, accept, reject, or expire actions.
+
+Subscription flows cover listing, filtering, standalone draft creation/editing, details, and confirmation, pause, resume, renewal, and close confirmations. The API contract names these actions and statuses but does not define allowed transitions or plan restrictions. The local demo therefore gates these actions using status and plan settings and does not present those assumptions as backend rules. Because a subscription has one plan while quotation lines can reference multiple plans, the demo rejects conversion when a quotation contains mixed plans rather than silently dropping line-level plan references. Recurring amounts are calculated from line snapshots, not from an invoicing or billing engine. Converting a quotation updates both local resources; browser storage does not provide a multi-key transaction.
+
+Customers can view only their own quotation and subscription records in the portal and list/detail pages. This is a frontend visibility control only; server-side ownership and role enforcement are required when the documented API endpoints are implemented. Invoices and payments remain outside this milestone.
 
 ## Authentication status
 

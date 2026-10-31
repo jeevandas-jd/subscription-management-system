@@ -24,6 +24,14 @@ export function canAccessPath(role: UserRole, pathname: string): boolean {
   const segment = pathname.split("/").filter(Boolean)[0];
   if (!segment) return true;
   const pathSegments = pathname.split("/").filter(Boolean);
+  if (
+    role === "CUSTOMER" &&
+    (segment === "quotations" || segment === "subscriptions") &&
+    pathSegments[1] !== "new" &&
+    pathSegments[2] !== "edit"
+  ) {
+    return true;
+  }
   const isCatalogMutation =
     (segment === "products" || segment === "plans") &&
     (pathSegments[1] === "new" || pathSegments[2] === "edit");
