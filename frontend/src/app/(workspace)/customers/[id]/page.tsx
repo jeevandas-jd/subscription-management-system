@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   title: "Customer profile",
 };
 
+export const instant = false;
+
 export default async function CustomerDetailPage({
   params,
 }: {

@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { EmptyState, PageContainer, PageHeader } from "@/components/shared/ui";
 import { workspacePages } from "@/data/navigation";
 
+export const instant = false;
+
 export function generateStaticParams() {
   return workspacePages
     .filter((page) => page.slug !== "dashboard")

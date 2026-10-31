@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   title: "Add customer",
 };
 
+export const instant = false;
+
 export default function NewCustomerPage() {
   return <CustomerForm mode="create" />;
 }

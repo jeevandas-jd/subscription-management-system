@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   title: "Customers",
 };
 
+export const instant = false;
+
 export default function CustomersPage() {
   return <CustomerListing />;
 }

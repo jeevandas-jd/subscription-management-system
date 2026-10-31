@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   title: "Edit customer",
 };
 
+export const instant = false;
+
 export default async function EditCustomerPage({
   params,
 }: {
