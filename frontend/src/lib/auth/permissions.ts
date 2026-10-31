@@ -23,9 +23,18 @@ export function landingPageForRole(role: UserRole): string {
 export function canAccessPath(role: UserRole, pathname: string): boolean {
   const segment = pathname.split("/").filter(Boolean)[0];
   if (!segment) return true;
+  const pathSegments = pathname.split("/").filter(Boolean);
+  const isCatalogMutation =
+    (segment === "products" || segment === "plans") &&
+    (pathSegments[1] === "new" || pathSegments[2] === "edit");
+  if (isCatalogMutation && role !== "ADMIN") return false;
   return rolePages[role].some(
     (allowed) => segment === allowed || segment.startsWith(`${allowed}/`),
   );
+}
+
+export function canManageCatalog(role: UserRole): boolean {
+  return role === "ADMIN";
 }
 
 export function safeRedirectTarget(
