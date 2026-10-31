@@ -28,7 +28,10 @@ export function AppShell({ children }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const page =
-    workspacePages.find((item) => pathname === `/${item.slug}`) ??
+    workspacePages.find(
+      (item) =>
+        pathname === `/${item.slug}` || pathname.startsWith(`/${item.slug}/`),
+    ) ??
     workspacePages[0];
 
   return (
@@ -140,7 +143,10 @@ export function AppSidebar({
                   <NavigationLink
                     key={item.slug}
                     item={item}
-                    active={pathname === `/${item.slug}`}
+                    active={
+                      pathname === `/${item.slug}` ||
+                      pathname.startsWith(`/${item.slug}/`)
+                    }
                     collapsed={collapsed}
                     onNavigate={onNavigate}
                   />

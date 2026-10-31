@@ -29,7 +29,7 @@ export const workspacePages: WorkspacePage[] = [
   {
     slug: "customers",
     label: "Customers",
-    description: "Keep customer profiles, account details, and subscription relationships organized.",
+    description: "Manage your customers and their billing information.",
     icon: Users,
   },
   {
